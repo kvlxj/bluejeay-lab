@@ -1,0 +1,4 @@
+projects:
+- name: lab
+  dir: tofu
+  opentofu: true

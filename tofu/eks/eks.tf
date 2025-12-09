@@ -7,6 +7,11 @@ module "eks" {
   endpoint_public_access = false
 
   addons = {
+    coredns    = {}
+    kube-proxy = {}
+    vpc-cni = {
+      before_compute = true
+    }
     coredns = {
       most_recent = true
       configuration_values = jsonencode(
@@ -24,6 +29,7 @@ module "eks" {
         }
       )
     }
+
     eks-pod-identity-agent = {
       most_recent = true
     }
@@ -31,20 +37,9 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
 
-  vpc_id                   = data.aws_vpc.selected.id
+  vpc_id                   = data.aws_vpc.this.id
   subnet_ids               = data.aws_subnets.private.ids
   control_plane_subnet_ids = data.aws_subnets.intra.ids
-
-  security_group_additional_rules = {
-    ingress_source_security_group_id = {
-      description              = "Ingress from the Tailscale security group to the API server"
-      protocol                 = "tcp"
-      from_port                = 443
-      to_port                  = 443
-      type                     = "ingress"
-      source_security_group_id = data.aws_security_group.tailscale.id
-    }
-  }
 
   # Allow control plane to reach node/pod ports for API server service proxy feature
   node_security_group_additional_rules = {
@@ -59,9 +54,8 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    main = {
-      name        = "main"
-      description = "EKS managed node group used to bootstrap Karpenter"
+    default = {
+      name = "default"
       # Use a single subnet for costs reasons
       subnet_ids = [element(data.aws_subnets.private.ids, 0)]
 
@@ -77,26 +71,9 @@ module "eks" {
         http_tokens   = "required"
       }
 
-      iam_role_additional_policies = merge(
-        var.enable_ssm ? { ssm = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore" } : {},
-        var.iam_role_additional_policies
-      )
-
       capacity_type        = "SPOT"
       force_update_version = true
       instance_types       = ["c7i.xlarge", "c7i-flex.xlarge", "c6i.xlarge", "t3a.xlarge", "c7i.2xlarge", "c7i-flex.2xlarge"]
-      # Exemple of how to configure Bottlerocket. https://bottlerocket.dev/en/os/1.41.x/api/settings/
-      # bootstrap_extra_args = <<-EOT
-      #   [settings.host-containers.admin]
-      #   enabled = true
-      # EOT
-      taints = {
-        "cilium" = {
-          key    = "node.cilium.io/agent-not-ready"
-          value  = "true"
-          effect = "NO_EXECUTE"
-        }
-      }
     }
   }
 
