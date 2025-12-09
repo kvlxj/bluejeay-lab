@@ -1,1 +1,1 @@
-# jeay-lab
+# Blue Jeay Lab

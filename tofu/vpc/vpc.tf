@@ -1,3 +1,4 @@
+
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -18,11 +19,17 @@ module "vpc" {
   create_flow_log_cloudwatch_log_group = true
 
   public_subnet_tags = merge(var.tags, {
+    "subnet-type"            = "public"
     "kubernetes.io/role/elb" = 1
   })
 
   private_subnet_tags = merge(var.tags, {
+    "subnet-type"                     = "private"
     "kubernetes.io/role/internal-elb" = 1
+  })
+
+  intra_subnet_tags = merge(var.tags, {
+    "subnet-type" = "intra"
   })
 
 }
