@@ -2,8 +2,3 @@ projects:
 - name: vpc
   dir: terraform/vpc
   opentofu: false
-- name: eks
-  dir: terraform/eks
-  opentofu: false
-  depends_on:
-  - vpc
