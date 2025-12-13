@@ -7,4 +7,8 @@ variable "cidr" {
 variable "tags" {
   description = "A map of tags to assign to the VPC and its components"
   type        = map(string)
+  default = {
+    "app:env"  = "lab"
+    "app:name" = "bluejeay"
+  }
 }
