@@ -7,32 +7,11 @@ module "eks" {
   endpoint_public_access = false
 
   addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni = {
-      before_compute = true
-    }
-    coredns = {
-      most_recent = true
-      configuration_values = jsonencode(
-        {
-          "autoScaling" : {
-            "enabled" : true,
-            "minReplicas" : 2,
-            "maxReplicas" : 4
-          }
-          tolerations = [
-            {
-              operator = "Exists"
-            }
-          ]
-        }
-      )
-    }
-
-    eks-pod-identity-agent = {
-      most_recent = true
-    }
+    aws-ebs-csi-driver     = {}
+    coredns                = {}
+    eks-pod-identity-agent = { before_compute = true }
+    kube-proxy             = {}
+    vpc-cni                = { before_compute = true }
   }
 
   enable_cluster_creator_admin_permissions = true
