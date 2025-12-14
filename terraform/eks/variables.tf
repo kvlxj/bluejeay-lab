@@ -9,3 +9,12 @@ variable "kubernetes_version" {
   type        = string
   default     = "1.34"
 }
+
+variable "tags" {
+  description = "A map of tags to assign to the VPC and its components"
+  type        = map(string)
+  default = {
+    "app:env"  = "lab"
+    "app:name" = "bluejeay"
+  }
+}
