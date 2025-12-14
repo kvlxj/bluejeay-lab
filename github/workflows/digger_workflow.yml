@@ -1,11 +1,11 @@
 name: Digger Workflow
 on:
+  pull_request:
+    branches: [ "main" ]
+    types: [ opened, synchronize ]
+  issue_comment:
+    types: [created]
   workflow_dispatch:
-    inputs:
-      spec:
-        required: true
-      run_name:
-        required: false
 run-name: '${{inputs.run_name}}'
 jobs:
   digger-job:
@@ -23,10 +23,11 @@ jobs:
         run: echo "job id ${{ fromJSON(github.event.inputs.spec).job_id }}"
       - uses: diggerhq/digger@vLatest
         with:
+          no-backend: true
           digger-spec: ${{ inputs.spec }}
           setup-aws: true
-          setup-opentofu: true
-          opentofu-version: 1.11.0
+          setup-terraform: true
+          terraform-version: 1.14.2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         env:
