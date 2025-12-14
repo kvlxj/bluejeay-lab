@@ -21,8 +21,8 @@ module "eks" {
   control_plane_subnet_ids = data.aws_subnets.intra.ids
 
   eks_managed_node_groups = {
-    small_spot = {
-      name       = "small-spot"
+    default = {
+      name       = "default"
       subnet_ids = slice(data.aws_subnets.private.ids, 0, 3)
 
       min_size     = 1
