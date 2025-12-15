@@ -1,0 +1,13 @@
+# .checkov.yaml
+skip-check:
+  - CKV_TF_1 # Ignore missing required provider version
+
+# # Or ignore by severity
+# skip-severity:
+#   - LOW
+#   - MEDIUM
+
+# # Ignore specific directories
+# skip-path:
+#   - terraform/modules/legacy/**
+#   - terraform/test/**

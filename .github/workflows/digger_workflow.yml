@@ -25,9 +25,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: ${{ fromJSON(github.event.inputs.spec).job_id }}
         run: echo "job id ${{ fromJSON(github.event.inputs.spec).job_id }}"
-      - uses: diggerhq/digger@vLatest
+      - name: Run Digger
+        uses: diggerhq/digger@vLatest
         with:
+          cache-dependencies: true
           digger-spec: ${{ inputs.spec }}
+          setup-checkov: true
           setup-aws: true
           setup-terraform: true
           terraform-version: 1.14.2

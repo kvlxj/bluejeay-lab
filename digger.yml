@@ -1,9 +1,15 @@
-projects:
-- name: vpc
-  dir: terraform/vpc
-  opentofu: false
-- name: eks
-  dir: terraform/eks
-  opentofu: false
+generate_projects:
+  blocks:
+      - include: "terraform/**"
+        workflow: checkov
 auto_merge: true
 auto_merge_strategy: "squash" # optional, only supported on github
+telemetry: false
+
+workflows:
+  checkov:
+    plan:
+      steps:
+        - init
+        - plan
+        - run: checkov -d . --framework terraform --soft-fail --compact --config-file $GITHUB_WORKSPACE/.checkov.yaml | tee -a $DIGGER_OUT

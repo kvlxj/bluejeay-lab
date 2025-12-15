@@ -6,6 +6,17 @@ module "eks" {
   kubernetes_version     = var.kubernetes_version
   endpoint_public_access = false
 
+  enable_cluster_creator_admin_permissions = false
+
+  access_entries = {
+    # No need to define this user as this is the one that creates the cluster and the variable 'enable_cluster_creator_admin_permissions' is set to true
+    kv = {
+      user_name         = "kv"
+      principal_arn     = "arn:aws:iam::${data.aws_caller_identity.this.account_id}:user/kv.aws@jeay.io"
+      kubernetes_groups = ["cluster-admin"]
+    }
+  }
+
   addons = {
     aws-ebs-csi-driver     = {}
     coredns                = {}
@@ -14,11 +25,12 @@ module "eks" {
     vpc-cni                = { before_compute = true }
   }
 
-  enable_cluster_creator_admin_permissions = true
-
   vpc_id                   = data.aws_vpc.this.id
   subnet_ids               = data.aws_subnets.private.ids
   control_plane_subnet_ids = data.aws_subnets.intra.ids
+
+
+
 
   eks_managed_node_groups = {
     default = {
