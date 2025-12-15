@@ -20,6 +20,8 @@ module "eks" {
   subnet_ids               = data.aws_subnets.private.ids
   control_plane_subnet_ids = data.aws_subnets.intra.ids
 
+  access_entries = []
+
   eks_managed_node_groups = {
     default = {
       name       = "default"

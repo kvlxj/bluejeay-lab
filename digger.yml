@@ -1,12 +1,7 @@
-projects:
-- name: vpc
-  dir: terraform/vpc
-  workflows: 
-    - checkov
-- name: eks
-  dir: terraform/eks
-  workflows: 
-    - checkov
+generate_projects:
+  blocks:
+      - include: "terraform/**"
+        workflow: checkov
 auto_merge: true
 auto_merge_strategy: "squash" # optional, only supported on github
 telemetry: false
