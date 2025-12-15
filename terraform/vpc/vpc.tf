@@ -30,6 +30,7 @@ module "vpc" {
 
   intra_subnet_tags = merge(var.tags, {
     "subnet-type" = "intra"
+    "test"        = "true"
   })
 
 }
