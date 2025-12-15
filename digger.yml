@@ -2,3 +2,8 @@ projects:
 - name: vpc
   dir: terraform/vpc
   opentofu: false
+- name: eks
+  dir: terraform/eks
+  opentofu: false
+auto_merge: true
+auto_merge_strategy: "squash" # optional, only supported on github
