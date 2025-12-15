@@ -1,15 +1,16 @@
 generate_projects:
   blocks:
       - include: "terraform/**"
-        workflow: checkov
+        workflow: full_check
 auto_merge: true
 auto_merge_strategy: "squash" # optional, only supported on github
 telemetry: false
 
 workflows:
-  checkov:
+  full_check:
     plan:
       steps:
         - init
         - plan
         - run: checkov -d . --framework terraform --soft-fail --compact --config-file $GITHUB_WORKSPACE/.checkov.yaml | tee -a $DIGGER_OUT
+        - run: infracost breakdown --path=. | tee -a $DIGGER_OUT
